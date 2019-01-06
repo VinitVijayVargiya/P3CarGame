@@ -10,7 +10,7 @@ white = (255,255,255)
 red = (255,0,0)
 
 
-# Making a window for game using pygame  
+# Making a window for game using pygame package
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))   # set the size of window 800 * 600
 
