@@ -102,7 +102,7 @@ def game_loop():
             crash()
         
         if thing_starty > display_height:
-            thing_starty = 0 - thing_height      # for continuous obstracles
+            thing_starty = 0 - thing_height      # for continuous obstacles
             thing_startx = random.randrange(0, display_width)
 
         pygame.display.update()    # update the display in forground  or we can use .flip() instead of .update() both will work. this line itself tells that in our game nothing is moving actually the frame is updating each time like a flip book to give feeling of motion 
