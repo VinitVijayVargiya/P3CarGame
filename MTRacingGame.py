@@ -22,7 +22,7 @@ pygame.display.set_caption('Moti Racing Game')  # Name of top task bar
 
 clock = pygame.time.Clock()    
 
-carImg = pygame.image.load('MyCarNew.png')
+carImg = pygame.image.load('mycar1_rsz.png')
 
 def things(thingx, thingy, thingw, thingh, color):
     pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])   # Draw a box 
