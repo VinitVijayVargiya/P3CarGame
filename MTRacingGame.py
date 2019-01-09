@@ -4,6 +4,10 @@ import random
 
 pygame.init()    #initializing pygame
 
+crash_sound =  pygame.mixer.Sound("crash.wav")
+pygame.mixer.music.load("jazz.wav")
+
+
 display_width = 800
 display_height = 600
 
@@ -30,6 +34,9 @@ pygame.display.set_caption('Moti Racing Game')  # Name of top task bar
 clock = pygame.time.Clock()    
 
 carImg = pygame.image.load('mycar1_rsz.png')
+
+pygame.display.set_icon(carImg)
+
 pause =  False
 
 
@@ -64,6 +71,11 @@ def message_display(text):
     game_loop()     # restart the game again
 
 def crash():
+
+    pygame.mixer.music.stop()   # stoping game music
+    pygame.mixer.Sound.play(crash_sound)
+
+
     largeText =  pygame.font.SysFont('comicsansms', 50)
     TextSurf, TextRect = text_object("You Crashed ", largeText)
     TextRect.center = ((display_width/2),(display_height/2))
@@ -114,11 +126,13 @@ def quitgame():
 
 def unpause():
     global pause
+
+    pygame.mixer.music.unpause()
     pause = False
 
 def paused():
 
-     
+    pygame.mixer.music.pause() 
     while pause:
          for event in pygame.event.get():
              if event.type == pygame.QUIT:
@@ -172,6 +186,8 @@ def game_intro():
 
 def game_loop():
     global pause
+
+    pygame.mixer.music.play(-1)   # -1 means keep playing music
 
     x = (display_width  *0.45)    #these dimension are important 
     y = (display_height *0.8)    
@@ -233,7 +249,7 @@ def game_loop():
             thing_starty = 0 - thing_height      # for continuous obstacles
             thing_startx = random.randrange(0, display_width)
             dodged += 1
-            thing_speed +=  0.2 # speed of obstacle update with dodged
+            thing_speed +=  1 # speed of obstacle update with dodged
             #thing_width  =  random.randrange(display_width/20, display_width/10) # randomly change width of obstacle
             #thing_width += (dodged * 1.2)    # obstacle width change with dodged count
 
