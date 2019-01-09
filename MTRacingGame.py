@@ -64,7 +64,28 @@ def message_display(text):
     game_loop()     # restart the game again
 
 def crash():
-    message_display('You Crashed')
+    largeText =  pygame.font.SysFont('comicsansms', 50)
+    TextSurf, TextRect = text_object("You Crashed ", largeText)
+    TextRect.center = ((display_width/2),(display_height/2))
+    gameDisplay.blit(TextSurf, TextRect)
+    #gameDisplay.fill(white)
+    while True:
+         for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                 pygame.quit()
+                 quit()
+         
+
+ 
+         mouse = pygame.mouse.get_pos()   # this will give (x,y) coordinate of mouse cursor 
+         #print(mouse)         
+         
+         # button(text, x_pos, y_pos, x_width, y_height, inactive_color, active_color )
+         button("Play Again", 150, 450, 100, 50, green, bright_green, game_loop) # passing action as a ref to the function
+ 
+         button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
+         pygame.display.update()
+         clock.tick(15)
 
 
 
