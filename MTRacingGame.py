@@ -9,7 +9,11 @@ display_height = 600
 
 black = (0,0,0)   #(R,G,B)
 white = (255,255,255)
-red = (255,0,0)
+red = (200,0,0)
+green = (0,200,0)
+
+bright_red = (255,0,0)
+bright_green = (0,255,0)
 
 block_color1 = (53,115,225)
 block_color2 = red
@@ -26,6 +30,8 @@ pygame.display.set_caption('Moti Racing Game')  # Name of top task bar
 clock = pygame.time.Clock()    
 
 carImg = pygame.image.load('mycar1_rsz.png')
+pause =  False
+
 
 def things_dodged(count):
     font =  pygame.font.SysFont(None, 25)
@@ -60,8 +66,92 @@ def message_display(text):
 def crash():
     message_display('You Crashed')
 
+
+
+def button(text, x_pos, y_pos, x_width, y_height, inactive_color, active_color, action=None):
+    mouse =  pygame.mouse.get_pos()     # mouse[0] = x-cordinate mouse[1] = y-cordinate
+    click =  pygame.mouse.get_pressed()  # this will give (left, center, right) mouse click [1 means clicked]
+
+    if x_pos + x_width > mouse[0]  > x_pos  and  y_pos + y_height > mouse[1] > y_pos:
+        pygame.draw.rect(gameDisplay, active_color, (x_pos, y_pos, x_width, y_height))
+        if click[0] == 1  and action != None:
+            action() # performing hte action
+
+
+    else:
+        pygame.draw.rect(gameDisplay, inactive_color, (x_pos, y_pos, x_width, y_height))
     
+    smallText =  pygame.font.Font("freesansbold.ttf", 20)
+    TextSurf, TextRect = text_object(text, smallText)
+    TextRect.center = ((x_pos + (x_width/2)),(y_pos + (y_height/2)))
+    gameDisplay.blit(TextSurf, TextRect)
+
+
+def quitgame():
+    pygame.quit()
+    quit()
+
+def unpause():
+    global pause
+    pause = False
+
+def paused():
+
+     
+    while pause:
+         for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                 pygame.quit()
+                 quit()
+         gameDisplay.fill(white)
+         largeText =  pygame.font.SysFont('comicsansms', 50)
+         TextSurf, TextRect = text_object("kisiki zindagi leke hi khatam hogi(Paused) ", largeText)
+         TextRect.center = ((display_width/2),(display_height/2))
+         gameDisplay.blit(TextSurf, TextRect)
+ 
+         mouse = pygame.mouse.get_pos()   # this will give (x,y) coordinate of mouse cursor 
+         #print(mouse)         
+         
+         # button(text, x_pos, y_pos, x_width, y_height, inactive_color, active_color )
+         button("Continue", 150, 450, 100, 50, green, bright_green, unpause) # passing action as a ref to the function
+ 
+         button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
+         pygame.display.update()
+         clock.tick(15)
+
+
+def game_intro():
+
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        gameDisplay.fill(white)
+        largeText =  pygame.font.SysFont('comicsansms', 50)
+        TextSurf, TextRect = text_object("Yeh Race, zindagi ki race hai.. ", largeText)
+        TextRect.center = ((display_width/2),(display_height/2))
+        gameDisplay.blit(TextSurf, TextRect)
+
+        mouse = pygame.mouse.get_pos()   # this will give (x,y) coordinate of mouse cursor 
+        #print(mouse)
+        
+        
+        # button(text, x_pos, y_pos, x_width, y_height, inactive_color, active_color )
+        button("GO!", 150, 450, 100, 50, green, bright_green, game_loop) # passing action as a ref to the function
+
+        button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
+
+        pygame.display.update()
+        clock.tick(15)
+
+
+
+
 def game_loop():
+    global pause
+
     x = (display_width  *0.45)    #these dimension are important 
     y = (display_height *0.8)    
 
@@ -69,7 +159,7 @@ def game_loop():
     thing_width = 100
     thing_startx = random.randrange(0, display_width-thing_width)    # object start in whole x width means randomly in x-direction
     thing_starty = -600   # 600 pixel above the screen (y=0 is top most point in left) 
-    thing_speed =  3     # how fast pixel move 
+    thing_speed =  5     # how fast pixel move 
     #thing_width =  100  #100 pixel object width
     thing_height = 100  # 100 * 100 box
     thing_count =  3    # number of things at a time
@@ -88,8 +178,12 @@ def game_loop():
                 if event.key == pygame.K_LEFT:
                     x_change = -5
 
-                elif event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT:
                     x_change = 5
+
+                if event.key == pygame.K_p:     # set small p for pause
+                    pause = True
+                    paused()
 
 
             if event.type == pygame.KEYUP:
@@ -118,8 +212,8 @@ def game_loop():
             thing_starty = 0 - thing_height      # for continuous obstacles
             thing_startx = random.randrange(0, display_width)
             dodged += 1
-            thing_speed +=  0.02 # speed of obstacle update with dodged
-            thing_width  =  random.randrange(display_width/20, display_width/10) # randomly change width of obstacle
+            thing_speed +=  0.2 # speed of obstacle update with dodged
+            #thing_width  =  random.randrange(display_width/20, display_width/10) # randomly change width of obstacle
             #thing_width += (dodged * 1.2)    # obstacle width change with dodged count
 
         if y < thing_starty + thing_height: # thing_starty is point to the top left most pixel but we check collision from bottom most point thats why we are adding thing_height. this is y crossover.
@@ -134,7 +228,7 @@ def game_loop():
         pygame.display.update()    # update the display in forground  or we can use .flip() instead of .update() both will work. this line itself tells that in our game nothing is moving actually the frame is updating each time like a flip book to give feeling of motion 
 
         clock.tick(60)     # refreshing or updating frequency (60 frames per second)
-
+game_intro()
 game_loop()      #calling game_loop function
 pygame.quit()    # quit pygame
 
